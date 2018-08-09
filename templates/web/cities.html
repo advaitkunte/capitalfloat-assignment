@@ -1,0 +1,135 @@
+{% extends 'layouts/base.html' %}
+{% block title %}View{% endblock %}
+
+{% block right_nav_bar %}
+<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	<form action="{{ url_for('city.search_city') }}" method="get" class="navbar-form navbar-left">
+	<div class="form-group">
+	  <select class="form-control" name="type" required>
+	  	<option {% if not request.args.type %}  selected="selected" {% endif %} value="" disabled>Search Kind</option>
+	  	<option {% if request.args.type=='name' %} selected="selected" {% endif %} value="name">Name</option>
+	  	<option {% if request.args.type=='countrycode' %} selected="selected" {% endif %} value="countrycode">Country Code</option>
+	  	<option {% if request.args.type=='district' %} selected="selected" {% endif %} value="district">District</option>
+	  </select>
+	  <input type="text" name="name" class="form-control" placeholder="Query" value="{{request.args.name or ''}}">
+	</div>
+	<button type="submit" class="btn btn-default">Search</button>
+  </form>
+  <ul class="nav navbar-nav navbar-right">
+	  <li><a href="{{ url_for('city.create_city') }}">New City</a></li>
+	  <li><a href="{{ url_for('city.cities') }}">View cities</a></li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block body %}
+<h1>Cities</h1>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th scope="col">
+				Name
+				<a href="{{ url_for('city.search_city', sort_by='name', dir='asc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-down"></i>
+				</a>
+				<a href="{{ url_for('city.search_city', sort_by='name', dir='desc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-up"></i>
+				</a>
+			</th>
+			<th scope="col">
+				Country
+				<a href="{{ url_for('city.search_city', sort_by='countrycode', dir='asc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-down"></i>
+				</a>
+				<a href="{{ url_for('city.search_city', sort_by='countrycode', dir='desc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-up"></i>
+				</a>
+			</th>
+			<th scope="col">
+				Region
+				<a href="{{ url_for('city.search_city', sort_by='region', dir='asc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-down"></i>
+				</a>
+				<a href="{{ url_for('city.search_city', sort_by='region', dir='desc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-up"></i>
+				</a>
+			</th>
+			<th scope="col">
+				District
+				<a href="{{ url_for('city.search_city', sort_by='district', dir='asc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-down"></i>
+				</a>
+				<a href="{{ url_for('city.search_city', sort_by='district', dir='desc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-up"></i>
+				</a>
+			</th>
+			<th scope="col">
+				Population
+				<a href="{{ url_for('city.search_city', sort_by='population', dir='asc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-down"></i>
+				</a>
+				<a href="{{ url_for('city.search_city', sort_by='population', dir='desc', type=request.args.type, name=request.args.name) }}">
+					<i class="fas fa-sort-alpha-up"></i>
+				</a>
+			</th>			
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+	{% for city in cities.items %}
+		<tr>
+			<td>{{ city.City.name }}</td>
+			<td>{{ city.Country.name }} ({{ city.City.countrycode }})</td>
+			<td>{{ city.Country.region or 'NA' }}</td>
+			<td>{{ city.City.district }}</td>
+			<td>{{ intcomma(city.City.population) }}</td>
+			<td class="text-right">
+				<div class="row">
+					<form action="{{ url_for('city.delete_city', **request.args) }}" method="post" class="pull-right">
+						<input type="hidden" name="id" value="{{ city.City.id }}">
+						<input type="submit" class="btn btn-danger" data-toggle="confirmation" value="Delete">
+					</form>
+					<a class="btn btn-primary pull-right" href="{{ url_for('city.edit_city', id=city.City.id) }}">Edit</a>
+				</div>
+			</td>
+		</tr>
+	{% endfor %}
+	<tr>
+		<td>{% if cities.has_prev %}<a class="btn btn-primary pull-left" href="
+			{% if _route == 'list_cities' %}
+			{{ url_for('city.cities', page=1, **request.args) }}
+			{% elif _route == 'search_cities' %}
+			{{ url_for('city.search_city', page=1, **request.args) }}
+			{% endif %}
+			">
+			&lt;&lt; First Page</a>{% endif %}</td>
+		<td>{% if cities.has_prev %}<a class="btn btn-primary pull-left" href="
+			{% if _route == 'list_cities' %}
+			{{ url_for('city.cities', page=cities.prev_num, **request.args) }}
+			{% elif _route == 'search_cities' %}
+			{{ url_for('city.search_city', page=cities.prev_num, **request.args) }}
+			{% endif %}
+			"
+			>&lt; Prev Page</a>{% endif %}</td>
+		<td></td>
+		<td></td>
+		<td>{% if cities.has_next %}<a class="btn btn-primary pull-right" href="
+			{% if _route == 'list_cities' %}
+			{{ url_for('city.cities', page=cities.next_num, **request.args) }}
+			{% elif _route == 'search_cities' %}
+			{{ url_for('city.search_city', page=cities.next_num, **request.args) }}
+			{% endif %}
+			">Next Page &gt;</a>{% endif %}</td>
+		<td>{% if cities.has_next %}<a class="btn btn-primary pull-right" href="
+			{% if _route == 'list_cities' %}
+			{{ url_for('city.cities', page=cities.pages, **request.args) }}
+			{% elif _route == 'search_cities' %}
+			{{ url_for('city.search_city', page=cities.pages, **request.args) }}
+			{% endif %}
+			">Last Page &gt;&gt;</a>{% endif %}</td>
+	</tr>
+	</tbody>
+</table>
+
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'layouts/base.html' %}
+{% block title %}New city{% endblock %}
+{% block body %}
+<h1>New city</h1>
+<form method="post">
+	{{ generate_fields(form) }}
+	<input type="submit" class="btn btn-success" value="Add">
+</form>
+{% endblock %}

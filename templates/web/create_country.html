@@ -1,0 +1,9 @@
+{% extends 'layouts/base.html' %}
+{% block title %}New Country{% endblock %}
+{% block body %}
+<h1>New country</h1>
+<form method="post">
+	{{ generate_fields(form) }}
+	<input type="submit" class="btn btn-success" value="Add">
+</form>
+{% endblock %}

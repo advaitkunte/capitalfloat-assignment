@@ -1,0 +1,46 @@
+{% from 'helpers/_forms.html' import generate_fields with context %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% block title %}{% endblock %} | World Flask </title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+  </head>
+  <body>
+	<nav class="navbar navbar-default">
+	  <div class="container-fluid">
+		<div class="navbar-header">
+		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a class="navbar-brand" href="/">World</a>
+		  <a class="navbar-brand" href="{{ url_for('city.cities') }}">Cities</a>
+		  <a class="navbar-brand" href="{{ url_for('country.country') }}">Countries</a>
+		</div>
+		{% block right_nav_bar %}{% endblock %}
+	  </div>
+	</nav>
+	<div class="container">
+		{# Flashed messages #}
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		  {% if messages %}
+			{% for category, message in messages %}
+			  <div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
+			{% endfor %}
+		  {% endif %}
+		{% endwith %}
+		{# End Flashed messages #}
+		{% block body %}{% endblock %}
+	</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.7/bootstrap-confirmation.min.js" integrity="sha256-Srd8mQAtI70OG58r7ouxQ3uZ7+kiqKl5VpN+oe6/8FA=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>
