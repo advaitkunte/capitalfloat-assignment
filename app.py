@@ -10,7 +10,7 @@ from models import db
 
 # Flask
 app = Flask(__name__)
-app.config.from_envvar('FLASK_CONFIG_FILE')
+app.config.from_object('config')
 db.init_app(app)
 
 app.register_blueprint(app_index)

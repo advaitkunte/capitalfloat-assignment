@@ -105,4 +105,4 @@ venv.bak/
 
 
 # config files
-config.*.py
+config.py
