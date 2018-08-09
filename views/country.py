@@ -65,7 +65,7 @@ def create_country():
     Create Country
     '''
     form = CountryForm()
-    form.capital.choices += [(i.id, i.name) for i in db.session.query(City).all()]
+    form.capital.choices += [(i.id, i.name) for i in db.session.query(City).order_by(City.name).all()]
 
     if form.validate_on_submit():
         country = Country()
@@ -106,7 +106,7 @@ def edit_country(id):
     '''
     country = Country.query.filter_by(id=id).first()
     form = CountryForm(obj=country)
-    form.capital.choices += [(i.id, i.name) for i in db.session.query(City).all()]
+    form.capital.choices += [(i.id, i.name) for i in db.session.query(City).order_by(City.name).all()]
 
     if form.validate_on_submit():
         try:
